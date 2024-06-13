@@ -1,0 +1,1 @@
+select * from salak_db.salak_rewards sr order by sr.modified_date desc;

@@ -1,0 +1,77 @@
+{
+	"folders": {},
+	"connections": {
+		"mysql8-18bf0f52ab3-310de8905a7a5504": {
+			"provider": "mysql",
+			"driver": "mysql8",
+			"name": "localhost",
+			"save-password": true,
+			"configuration": {
+				"host": "localhost",
+				"port": "3306",
+				"url": "jdbc:mysql://localhost:3306/",
+				"configurationType": "MANUAL",
+				"home": "mysql_client",
+				"type": "dev",
+				"closeIdleConnection": false,
+				"auth-model": "native"
+			},
+			"custom-properties": {
+				"SQLEditor.outputPanel.autoShow": "false",
+				"resultset.confirm.beforeSave": "false",
+				"resultset.datetime.editor": "false"
+			}
+		},
+		"mysql8-18c347728f8-48c60e102aaebb8a": {
+			"provider": "mysql",
+			"driver": "mysql8",
+			"name": "VocPRD",
+			"save-password": true,
+			"configuration": {
+				"host": "10.0.99.210",
+				"port": "3306",
+				"url": "jdbc:mysql://10.0.99.210:3306/",
+				"configurationType": "MANUAL",
+				"home": "mysql_client",
+				"type": "dev",
+				"closeIdleConnection": false,
+				"auth-model": "native"
+			}
+		},
+		"mysql8-18f950c8457-1685e784e11f79a2": {
+			"provider": "mysql",
+			"driver": "mysql8",
+			"name": "10.0.99.50",
+			"save-password": true,
+			"configuration": {
+				"host": "10.0.99.50",
+				"port": "3306",
+				"url": "jdbc:mysql://10.0.99.50:3306/",
+				"configurationType": "MANUAL",
+				"home": "mysql_client",
+				"type": "dev",
+				"closeIdleConnection": false,
+				"auth-model": "native"
+			},
+			"custom-properties": {
+				"resultset.maxrows": "30000"
+			}
+		}
+	},
+	"connection-types": {
+		"dev": {
+			"name": "Development",
+			"color": "255,255,255",
+			"description": "Regular development database",
+			"auto-commit": true,
+			"confirm-execute": false,
+			"confirm-data-change": false,
+			"smart-commit": false,
+			"smart-commit-recover": false,
+			"auto-close-transactions": true,
+			"close-transactions-period": 1800,
+			"auto-close-connections": true,
+			"close-connections-period": 14400
+		}
+	}
+}
