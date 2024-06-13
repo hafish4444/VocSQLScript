@@ -836,6 +836,10 @@ UPDATE ranking_rewards
     SET ranking_reward_name='รางวัลเพื่อการศึกษา'
     WHERE ranking_reward_id=13;
    
+ALTER TABLE salak_rewards ADD is_manual tinyint(1) DEFAULT 1 NOT NULL COMMENT 'Current Is Manual' AFTER release_date;
+ALTER TABLE salak_rewards ADD is_digital tinyint(1) DEFAULT 1 NOT NULL COMMENT 'Current Is Digital' AFTER is_manual;
+ALTER TABLE salak_rewards ADD is_alphabet tinyint(1) DEFAULT 1 NOT NULL COMMENT 'Current Is Alphabet' AFTER is_digital;
+
 -- CREATE TABLE ranking_rewards_temp (
 -- 	ranking_reward_id int(11) auto_increment NOT NULL,
 -- 	ranking_reward_name varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL NULL,
