@@ -389,6 +389,120 @@ CREATE TABLE IF NOT EXISTS `salak_rewards` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
+-- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+-- Table `salak_reward_approvals_detail`
+-- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+CREATE TABLE IF NOT EXISTS `salak_reward_approvals_detail` (
+  `salak_reward_detail_id` INT NOT NULL AUTO_INCREMENT,
+  `salak_reward_approval_id` INT NOT NULL,
+  `ranking_reward_id` INT NOT NULL,
+  `salak_number` varchar(255) NULL,
+  `salak_number_range_start` varchar(45) NULL,
+  `salak_number_range_end` varchar(45) NULL,
+  `amount_of_release` INT NOT NULL DEFAULT 0,
+  `amount_of_win` INT NOT NULL DEFAULT 0,
+  `release_date` DATETIME NOT NULL,
+  `alphabet_detail` varchar(255) NULL,
+  `alphabet_range_start` varchar(45) NULL,
+  `alphabet_range_end` varchar(45) NULL,
+  `period_detail` INT NULL,
+  `period_display` varchar(255) NULL DEFAULT NULL,
+  `period_range_start` INT NULL,
+  `period_range_end` INT NULL,
+  `price` DOUBLE(18,2) NOT NULL DEFAULT 0,
+  `price_detail` DOUBLE(18,2) NOT NULL DEFAULT 0,
+  `account_type` INT NOT NULL,
+  `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `created_by` INT NULL,
+  `modified_date` DATETIME NULL,
+  `modified_by` INT NULL,
+  `ord` INT NOT NULL DEFAULT 1,
+  `is_enabled` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`salak_reward_detail_id`),
+  INDEX `fk_salak_reward_approvals_detail_salak_reward_approvals_idx` (`salak_reward_approval_id` ASC),
+  INDEX `fk_salak_reward_approvals_detail_ranking_rewards1_idx` (`ranking_reward_id` ASC),
+  INDEX `fk_salak_reward_approvals_detail_created_idx` (`created_by` ASC),
+  INDEX `fk_salak_reward_approvals_detail_modified_idx` (`modified_by` ASC),
+  CONSTRAINT `fk_salak_reward_approvals_detail_salak_reward_approvals`
+    FOREIGN KEY (`salak_reward_approval_id`)
+    REFERENCES `salak_reward_approvals` (`salak_reward_approval_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_salak_reward_approvals_detail_created`
+    FOREIGN KEY (`created_by`)
+    REFERENCES `users` (`user_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_salak_reward_approvals_detail_modified`
+    FOREIGN KEY (`modified_by`)
+    REFERENCES `users` (`user_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_salak_reward_approvals_detail_ranking_rewards1`
+    FOREIGN KEY (`ranking_reward_id`)
+    REFERENCES `ranking_rewards` (`ranking_reward_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+
+
+-- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+-- Table `salak_reward_approvals`
+-- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+CREATE TABLE IF NOT EXISTS `salak_reward_approvals` (
+  `salak_reward_approval_id` INT NOT NULL AUTO_INCREMENT,
+  `salak_reward_id` INT NOT NULL,
+  `salak_type_id` INT NOT NULL,
+  `month_of_release` DATETIME NOT NULL,
+  `release_date` DATETIME NOT NULL,
+  `approvald_date` DATETIME NULL,
+  `approvald_by` INT NULL,
+  PRIMARY KEY (`salak_reward_approval_id`),
+  INDEX `fk_salak_rewards_approvals_salak_reward_idx` (`salak_reward_id` ASC),
+  INDEX `fk_salak_rewards_approvals_salak_types1_idx` (`salak_type_id` ASC),
+  CONSTRAINT `fk_salak_rewards_approvals_salak_rewards1`
+    FOREIGN KEY (`salak_reward_id`)
+    REFERENCES `salak_rewards` (`salak_reward_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_salak_rewards_approvals_salak_types1`
+    FOREIGN KEY (`salak_type_id`)
+    REFERENCES `salak_types` (`salak_type_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_salak_rewards_approvals_approvald`
+    FOREIGN KEY (`approvald_by`)
+    REFERENCES `users` (`user_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
+
+-- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+-- Table `salak_preview_versions`
+-- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
+CREATE TABLE IF NOT EXISTS `salak_reward_approval_versions` (
+  `salak_reward_approval_version_id` INT NOT NULL AUTO_INCREMENT,
+  `salak_reward_id` INT NOT NULL,
+  `salak_reward_approval_id` INT NOT NULL,
+  `version` INT NOT null,
+  `is_enabled` TINYINT(1) NOT NULL DEFAULT 1,
+  PRIMARY KEY (`salak_reward_approval_version_id`),
+  INDEX `fk_salak_reward_approval_version_salak_rewards1_idx` (`salak_reward_id` ASC),
+  INDEX `fk_salak_reward_approval_version_salak_reward_approvals1_idx` (`salak_reward_approval_id` ASC),
+  CONSTRAINT `fk_salak_reward_approval_version_salak_rewards1`
+    FOREIGN KEY (`salak_reward_id`)
+    REFERENCES `salak_rewards` (`salak_reward_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION,
+  CONSTRAINT `fk_salak_reward_approval_version_salak_reward_approvals1`
+    FOREIGN KEY (`salak_reward_approval_id`)
+    REFERENCES `salak_reward_approvals` (`salak_reward_approval_id`)
+    ON DELETE NO ACTION
+    ON UPDATE NO ACTION)
+ENGINE = InnoDB
+DEFAULT CHARACTER SET = utf8mb4;
 
 -- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 -- Table `salak_reward_files`
@@ -874,7 +988,7 @@ ALTER TABLE salak_rewards ADD is_alphabet tinyint(1) DEFAULT 1 NOT NULL COMMENT 
 -- 	 ('รางวัลสมนาคุณเลขท้าย 4 ตัว',"ทส" ,'2024-04-25 15:57:41',1,'2024-05-06 15:52:56',1,14,1,1),
 -- 	 ('รางวัลสมนาคุณ',"สค" ,'2024-04-25 15:57:41',1,'2024-05-06 15:52:56',1,15,1,1),
 -- 	 ('เลขท้าย 4 ตัว',"ช4" ,'2024-04-25 15:57:41',1,'2024-05-06 15:52:56',1,10,1,1);
-	
+
 SET SQL_MODE=@OLD_SQL_MODE;
 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS;
 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;

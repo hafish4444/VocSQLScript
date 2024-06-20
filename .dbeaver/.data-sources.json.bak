@@ -52,9 +52,27 @@
 				"type": "dev",
 				"closeIdleConnection": false,
 				"auth-model": "native"
-			},
-			"custom-properties": {
-				"resultset.maxrows": "30000"
+			}
+		},
+		"postgres-jdbc-190257d1a7d-5a2b336beb201174": {
+			"provider": "postgresql",
+			"driver": "postgres-jdbc",
+			"name": "postgres",
+			"save-password": true,
+			"configuration": {
+				"host": "localhost",
+				"port": "5432",
+				"database": "postgres",
+				"url": "jdbc:postgresql://localhost:5432/postgres",
+				"configurationType": "MANUAL",
+				"home": "postgresql-x64-15",
+				"type": "dev",
+				"closeIdleConnection": true,
+				"provider-properties": {
+					"@dbeaver-show-non-default-db@": "false",
+					"@dbeaver-chosen-role@": ""
+				},
+				"auth-model": "native"
 			}
 		}
 	},
