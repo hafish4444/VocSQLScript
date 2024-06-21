@@ -456,8 +456,9 @@ CREATE TABLE IF NOT EXISTS `salak_reward_approvals` (
   `salak_type_id` INT NOT NULL,
   `month_of_release` DATETIME NOT NULL,
   `release_date` DATETIME NOT NULL,
-  `approvald_date` DATETIME NULL,
-  `approvald_by` INT NULL,
+  `approved_date` DATETIME NULL,
+  `approved_by` INT NULL,
+  `is_last_version` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`salak_reward_approval_id`),
   INDEX `fk_salak_rewards_approvals_salak_reward_idx` (`salak_reward_id` ASC),
   INDEX `fk_salak_rewards_approvals_salak_types1_idx` (`salak_type_id` ASC),
@@ -471,8 +472,8 @@ CREATE TABLE IF NOT EXISTS `salak_reward_approvals` (
     REFERENCES `salak_types` (`salak_type_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION,
-  CONSTRAINT `fk_salak_rewards_approvals_approvald`
-    FOREIGN KEY (`approvald_by`)
+  CONSTRAINT `fk_salak_rewards_approvals_approved`
+    FOREIGN KEY (`approved_by`)
     REFERENCES `users` (`user_id`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION)
@@ -487,7 +488,7 @@ CREATE TABLE IF NOT EXISTS `salak_reward_approval_versions` (
   `salak_reward_id` INT NOT NULL,
   `salak_reward_approval_id` INT NOT NULL,
   `version` INT NOT null,
-  `is_enabled` TINYINT(1) NOT NULL DEFAULT 1,
+  `is_last_version` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`salak_reward_approval_version_id`),
   INDEX `fk_salak_reward_approval_version_salak_rewards1_idx` (`salak_reward_id` ASC),
   INDEX `fk_salak_reward_approval_version_salak_reward_approvals1_idx` (`salak_reward_approval_id` ASC),
