@@ -19,7 +19,8 @@
 			"custom-properties": {
 				"SQLEditor.outputPanel.autoShow": "false",
 				"resultset.confirm.beforeSave": "false",
-				"resultset.datetime.editor": "false"
+				"resultset.datetime.editor": "false",
+				"resultset.maxrows": "1000"
 			}
 		},
 		"mysql8-18c347728f8-48c60e102aaebb8a": {
@@ -51,27 +52,6 @@
 				"home": "mysql_client",
 				"type": "dev",
 				"closeIdleConnection": false,
-				"auth-model": "native"
-			}
-		},
-		"postgres-jdbc-190257d1a7d-5a2b336beb201174": {
-			"provider": "postgresql",
-			"driver": "postgres-jdbc",
-			"name": "postgres",
-			"save-password": true,
-			"configuration": {
-				"host": "localhost",
-				"port": "5432",
-				"database": "postgres",
-				"url": "jdbc:postgresql://localhost:5432/postgres",
-				"configurationType": "MANUAL",
-				"home": "postgresql-x64-15",
-				"type": "dev",
-				"closeIdleConnection": true,
-				"provider-properties": {
-					"@dbeaver-show-non-default-db@": "false",
-					"@dbeaver-chosen-role@": ""
-				},
 				"auth-model": "native"
 			}
 		}

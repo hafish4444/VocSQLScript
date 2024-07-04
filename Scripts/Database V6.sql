@@ -104,7 +104,7 @@ CREATE TABLE IF NOT EXISTS `actions` (
   `is_enabled` TINYINT(1) NOT NULL DEFAULT 1,
   `is_for_permission` TINYINT(1) NOT NULL DEFAULT 1,
   `is_display` TINYINT(1) NOT NULL DEFAULT 0,
-  `ord` INT NOT NULL DEFAULT 1,
+  `ord` INT(11) NULL DEFAULT 1,
   PRIMARY KEY (`action_id`))
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
@@ -113,12 +113,11 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- Table `permissions`
 -- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 CREATE TABLE `modules_actions` (
-  `module_action_id` INT(11) NOT NULL AUTO_INCREMENT,
   `module_id` INT(11) NOT NULL,
   `action_id` INT(11) NOT NULL,
-  PRIMARY KEY (`module_action_id`),
-  INDEX `fk_modules_1_idx` (`module_id` ASC) ,
-  INDEX `fk_actions_1_idx` (`action_id` ASC) ,
+  PRIMARY KEY (`module_id`, `action_id`),
+  INDEX `fk_modules_1_idx` (`module_id` ASC),
+  INDEX `fk_actions_1_idx` (`action_id` ASC),
   CONSTRAINT `fk_modules_1`
     FOREIGN KEY (`module_id`)
     REFERENCES `modules` (`module_id`)
@@ -128,7 +127,8 @@ CREATE TABLE `modules_actions` (
     FOREIGN KEY (`action_id`)
     REFERENCES `actions` (`action_id`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION)
+    ON UPDATE NO ACTION
+)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
@@ -329,7 +329,6 @@ CREATE TABLE IF NOT EXISTS `salak_rewards_detail` (
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
-
 -- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 -- Table `salak_rewards`
 -- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
@@ -339,8 +338,12 @@ CREATE TABLE IF NOT EXISTS `salak_rewards` (
   `salak_type_id` INT NOT NULL,
   `month_of_release` DATETIME NOT NULL,
   `release_date` DATETIME NOT NULL,
+  `is_manual` tinyint(1) DEFAULT 1 NOT NULL COMMENT 'Current Is Manual',
+  `is_digital` tinyint(1) DEFAULT 1 NOT NULL COMMENT 'Current Is Digital',
+  `is_alphabet` tinyint(1) DEFAULT 1 NOT NULL COMMENT 'Current Is Alphabet',
   `file_range_ftp_path` VARCHAR(100) NULL,
   `file_detail_ftp_path` VARCHAR(100) NULL,
+  `remark` varchar(255) NULL DEFAULT NULL,
   `approved_date` DATETIME NULL,
   `approved_by` INT NULL,
   `rejected_date` DATETIME NULL,
@@ -393,7 +396,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 -- Table `salak_reward_approvals_detail`
 -- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 CREATE TABLE IF NOT EXISTS `salak_reward_approvals_detail` (
-  `salak_reward_detail_id` INT NOT NULL AUTO_INCREMENT,
+  `salak_reward_approval_detail_id` INT NOT NULL AUTO_INCREMENT,
   `salak_reward_approval_id` INT NOT NULL,
   `ranking_reward_id` INT NOT NULL,
   `salak_number` varchar(255) NULL,
@@ -418,7 +421,7 @@ CREATE TABLE IF NOT EXISTS `salak_reward_approvals_detail` (
   `modified_by` INT NULL,
   `ord` INT NOT NULL DEFAULT 1,
   `is_enabled` TINYINT(1) NOT NULL DEFAULT 1,
-  PRIMARY KEY (`salak_reward_detail_id`),
+  PRIMARY KEY (`salak_reward_approval_detail_id`),
   INDEX `fk_salak_reward_approvals_detail_salak_reward_approvals_idx` (`salak_reward_approval_id` ASC),
   INDEX `fk_salak_reward_approvals_detail_ranking_rewards1_idx` (`ranking_reward_id` ASC),
   INDEX `fk_salak_reward_approvals_detail_created_idx` (`created_by` ASC),
@@ -445,7 +448,6 @@ CREATE TABLE IF NOT EXISTS `salak_reward_approvals_detail` (
     ON UPDATE NO ACTION)
 ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
-
 
 -- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 -- Table `salak_reward_approvals`
@@ -481,12 +483,12 @@ ENGINE = InnoDB
 DEFAULT CHARACTER SET = utf8mb4;
 
 -- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
--- Table `salak_preview_versions`
+-- Table `salak_reward_approval_versions`
 -- -- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- --- ---
 CREATE TABLE IF NOT EXISTS `salak_reward_approval_versions` (
   `salak_reward_approval_version_id` INT NOT NULL AUTO_INCREMENT,
   `salak_reward_id` INT NOT NULL,
-  `salak_reward_approval_id` INT NOT NULL,
+  `salak_reward_approval_id` INT NOT null UNIQUE,
   `version` INT NOT null,
   `is_last_version` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`salak_reward_approval_version_id`),
@@ -662,6 +664,7 @@ CREATE TABLE `salak_reward_previews` (
   `salak_type_url` VARCHAR(255) NULL DEFAULT NULL,
   `month` VARCHAR(100) NULL DEFAULT NULL,
   `release_date` DATETIME NULL DEFAULT NULL,
+  `remark` varchar(255) null DEFAULT null,
   `created_date` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `created_by` INT NULL,
   `is_temporary` TINYINT(1) NOT NULL DEFAULT 1,
@@ -732,7 +735,7 @@ DEFAULT CHARACTER SET = utf8mb4;
 CREATE TABLE IF NOT EXISTS `salak_reward_preview_versions` (
   `salak_reward_preview_version_id` INT NOT NULL AUTO_INCREMENT,
   `salak_reward_id` INT NOT NULL,
-  `salak_reward_preview_id` INT NOT NULL,
+  `salak_reward_preview_id` INT NOT null UNIQUE,
   `version` INT NOT NULL,
   `is_enabled` TINYINT(1) NOT NULL DEFAULT 1,
   PRIMARY KEY (`salak_reward_preview_version_id`),
@@ -795,7 +798,7 @@ INSERT INTO `modules_actions` (`module_id`, `action_id`) VALUES ('7', '8');
 INSERT INTO `modules_actions` (`module_id`, `action_id`) VALUES ('7', '9');
 
 -- - Role ผู้ดูแลระบบ -- -
-INSERT INTO `roles` (`role_id`, `role_name`, `role_desc`, `is_super_admin`, `is_enabled`) VALUES ('1', 'ผู้ดูแลระบบ (Super Admin)', 'ผู้สร้างข้อมูล (Maker) : ผู้มีสิทธิ์ในการสร้างข้อมูล<br>(สามารถจัดการประเภทสลาก จัดการอันดับรางวัล และจัดการข้อมูลผลรางวัลสลาก)', 1, 1);
+INSERT INTO `roles` (`role_id`, `role_name`, `role_desc`, `is_super_admin`, `is_enabled`) VALUES ('1', 'ผู้ดูแลระบบ (Super Admin)', 'ผู้สร้างข้อมูล (Maker) : ผู้มีสิทธิ์ในการสร้างข้อมูล<br>(สามารถจัดการประเภทสลาก จัดการอันดับรางวัล <br>และจัดการข้อมูลผลรางวัลสลาก )', 1, 1);
   -- จัดการประเภทสลาก --
   INSERT INTO `permissions` (`role_id`, `module_id`, `action_id`) VALUES (1, 3, 1);
   INSERT INTO `permissions` (`role_id`, `module_id`, `action_id`) VALUES (1, 3, 2);
@@ -829,7 +832,7 @@ INSERT INTO `roles` (`role_id`, `role_name`, `role_desc`, `is_super_admin`, `is_
   INSERT INTO `permissions` (`role_id`, `module_id`, `action_id`) VALUES (1, 7, 9);
   
 -- - Role ผู้ตรวจสอบข้อมูล -- -
-INSERT INTO `roles` (`role_id`, `role_name`, `role_desc`, `is_enabled`) VALUES ('2', 'ผู้ตรวจสอบข้อมูล (Checker)', 'ผู้ตรวจสอบข้อมูล (Checker) : ผู้มีสิทธิ์ในการตรวจสอบข้อมูล<br>(สามารถจัดการประเภทสลาก จัดการอันดับรางวัล และจัดการข้อมูลผลรางวัลสลาก รวมถึงตรวจสอบและอนุมัติผลรางวัลสลาก)', 1);
+INSERT INTO `roles` (`role_id`, `role_name`, `role_desc`, `is_enabled`) VALUES ('2', 'ผู้ตรวจสอบข้อมูล (Checker)', 'ผู้ตรวจสอบข้อมูล (Checker) : ผู้มีสิทธิ์ในการตรวจสอบข้อมูล<br>(สามารถจัดการประเภทสลาก จัดการอันดับรางวัล <br>และจัดการข้อมูลผลรางวัลสลาก รวมถึงตรวจสอบและอนุมัติผลรางวัลสลาก)', 1);
   -- จัดการประเภทสลาก --
   INSERT INTO `permissions` (`role_id`, `module_id`, `action_id`) VALUES (2, 3, 1);
   INSERT INTO `permissions` (`role_id`, `module_id`, `action_id`) VALUES (2, 3, 2);
@@ -925,35 +928,9 @@ VALUES("อันดับพิเศษ", "10", current_timestamp(), 1, NULL, 
 INSERT INTO `ranking_rewards` (`ranking_reward_name`, `ranking_reward_code`, `created_date`, `created_by`, `modified_date`, `modified_by`, `ord`, `is_active`, `is_enabled`)
 VALUES("รางวัลเพิ่มโชค", "11", current_timestamp(), 1, NULL, NULL, 13, 1, 1);
 INSERT INTO `ranking_rewards` (`ranking_reward_name`, `ranking_reward_code`, `created_date`, `created_by`, `modified_date`, `modified_by`, `ord`, `is_active`, `is_enabled`)
-VALUES("รางวัลสมนาคุณเลขท้าย 4 ตัว", "14", current_timestamp(), 1, NULL, NULL, 14, 1, 1);
+VALUES("รางวัลเพื่อการศึกษา", "14", current_timestamp(), 1, NULL, NULL, 14, 1, 1);
 INSERT INTO `ranking_rewards` (`ranking_reward_name`, `ranking_reward_code`, `created_date`, `created_by`, `modified_date`, `modified_by`, `ord`, `is_active`, `is_enabled`)
 VALUES("รางวัลสมนาคุณ", "12", current_timestamp(), 1, NULL, NULL, 15, 1, 1);
-
-ALTER TABLE salak_type_periods ADD publish_start DATETIME NULL;
-ALTER TABLE salak_type_periods ADD publish_end DATETIME NULL;
-
-UPDATE `roles` SET `role_desc` = 'ผู้สร้างข้อมูล (Maker) : ผู้มีสิทธิ์ในการสร้างข้อมูล<br>(สามารถจัดการประเภทสลาก จัดการอันดับรางวัล <br>และจัดการข้อมูลผลรางวัลสลาก )' WHERE (`role_id` = '1');
-UPDATE `roles` SET `role_desc` = 'ผู้ตรวจสอบข้อมูล (Checker) : ผู้มีสิทธิ์ในการตรวจสอบข้อมูล<br>(สามารถจัดการประเภทสลาก จัดการอันดับรางวัล <br>และจัดการข้อมูลผลรางวัลสลาก รวมถึงตรวจสอบและอนุมัติผลรางวัลสลาก)' WHERE (`role_id` = '2');
-
-ALTER TABLE `actions` 
-CHANGE COLUMN `ord` `ord` INT(11) NULL DEFAULT NULL ;
-
-ALTER TABLE `modules_actions` 
-DROP COLUMN `module_action_id`,
-DROP PRIMARY KEY,
-ADD PRIMARY KEY (`module_id`, `action_id`);
-;
-
-ALTER TABLE salak_reward_previews ADD remark varchar(255) null DEFAULT NULL AFTER release_date;
-ALTER TABLE salak_rewards ADD remark varchar(255) null DEFAULT null after file_detail_ftp_path;
-
-UPDATE ranking_rewards
-    SET ranking_reward_name='รางวัลเพื่อการศึกษา'
-    WHERE ranking_reward_id=13;
-   
-ALTER TABLE salak_rewards ADD is_manual tinyint(1) DEFAULT 1 NOT NULL COMMENT 'Current Is Manual' AFTER release_date;
-ALTER TABLE salak_rewards ADD is_digital tinyint(1) DEFAULT 1 NOT NULL COMMENT 'Current Is Digital' AFTER is_manual;
-ALTER TABLE salak_rewards ADD is_alphabet tinyint(1) DEFAULT 1 NOT NULL COMMENT 'Current Is Alphabet' AFTER is_digital;
 
 -- CREATE TABLE ranking_rewards_temp (
 -- 	ranking_reward_id int(11) auto_increment NOT NULL,
